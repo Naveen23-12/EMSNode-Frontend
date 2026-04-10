@@ -1,0 +1,247 @@
+/* ================= GLOBAL ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1f2937, #111827);
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+}
+
+/* ================= NAVBAR ================= */
+.top-navbar {
+    width: 100%;
+    padding: 18px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(20, 25, 40, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+.top-navbar h3 {
+    font-weight: 600;
+}
+
+/* ================= PAGE WRAPPER ================= */
+.page-wrapper {
+    padding: 40px 60px;
+}
+
+/* ================= TABLE ================= */
+.modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.modern-table th, 
+.modern-table td {
+    padding: 14px;
+    text-align: left;
+}
+
+.modern-table thead {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.modern-table th {
+    font-weight: 600;
+}
+
+.modern-table tbody tr {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modern-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transition: 0.3s ease;
+}
+
+/* ================= FORM PAGE ================= */
+.form-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ================= GLASS CONTAINER ================= */
+.glass-container {
+    width: 400px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* ================= INPUT ================= */
+.glass-container input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.glass-container input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.glass-container input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* ================= BUTTONS ================= */
+.btn-glossy {
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(135deg, #8b0000, #b22222);
+    color: white;
+    font-weight: bold;
+    transition: 0.3s ease;
+}
+
+.btn-glossy:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(178, 34, 34, 0.5);
+}
+
+.btn-danger {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: #dc2626;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #b91c1c;
+}
+
+/* ================= LOGIN PAGE ================= */
+.login-page {
+    min-height: 100vh;
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+                url("../images/login-bg.jpg") no-repeat center center/cover;
+}
+
+.login-wrapper {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.glass-login {
+    width: 380px;
+    padding: 40px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.glass-login h2 {
+    margin-bottom: 20px;
+}
+
+/* Login Inputs */
+.glass-login input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+}
+
+.glass-login input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Error */
+.error-message {
+    margin-top: 10px;
+    color: #ff4d4d;
+    font-size: 13px;
+}
+
+/* ================= SEARCH ================= */
+#search {
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+    margin-right: 10px;
+    width: 500px;
+}
+
+/* ================= BUTTON ALIGN ================= */
+button {
+    margin-top: 10px;
+}
+
+.img{
+    height: 300px;
+
+}
+
+.pagination {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.pagination button {
+    margin: 5px;
+    padding: 8px 12px;
+    border: none;
+    background: #444;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.pagination button.active {
+    background: #007bff;
+}
+
+.pagination button:hover {
+    background: #007bff;
+}
+
+.reload:link, .reload:hover, .reload:active, .reload:visited{
+    color: white;
+    text-decoration: none;
+}
+
+.btn-edit{
+     padding: 10px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    background-color: whitesmoke;
+    font-weight: bold;
+
+}
+
+.btn-edit:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(168, 84, 84, 0.5);
+}

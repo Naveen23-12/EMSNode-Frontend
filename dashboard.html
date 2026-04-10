@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employees</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div class="top-navbar">
+   <a class="reload" href=""><h3>EMS Dashboard</h3></a> 
+
+    <input id="search" placeholder="Search">
+    <button class="btn-glossy" onclick="loadEmployees(1)">Search</button>
+    <button class="btn-glossy" onclick="logout()">Logout</button>
+
+    <a href="add.html" class="btn-glossy">Add</a>
+</div>
+
+<div class="page-wrapper">
+
+    <table class="modern-table">
+        <thead>
+        <tr>
+            <th>ID</th><th>Name</th><th>Email</th>
+            <th>Dept</th><th>Salary</th><th>Actions</th>
+        </tr>
+        </thead>
+
+        <tbody id="table"></tbody>
+    </table>
+
+    <!-- ✅ PAGINATION -->
+    <div class="pagination" id="pagination"></div>
+
+</div>
+
+<script src="js/app.js"></script>
+<script>
+checkSession();
+loadEmployees();
+</script>
+
+</body>
+</html>

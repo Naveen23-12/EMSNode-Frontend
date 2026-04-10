@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Employee</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="form-page">
+
+<div class="glass-container">
+
+    <h2>Edit Employee</h2>
+
+    <input type="hidden" id="id">
+
+    <input id="name" placeholder="Name">
+    <input id="email" placeholder="Email">
+    <input id="department" placeholder="Department">
+    <input id="salary" placeholder="Salary">
+
+    <button onclick="updateEmployee()" class="btn-glossy">Update</button>
+
+</div>
+
+<script src="js/app.js"></script>
+<script>
+loadEmployeeById();
+</script>
+
+</body>
+</html>
