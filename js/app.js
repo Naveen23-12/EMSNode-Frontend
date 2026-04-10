@@ -65,8 +65,8 @@ fetch(`${BASE_URL}/employees?page=${page}&keyword=${keyword}`, {
 <td>${e.department}</td>
 <td>${e.salary}</td>
 <td>
-        <button class="btn-edit" onclick="editEmp(${e._id})">Edit</button>
-        <button class="btn-glossy" onclick="deleteEmp(${e._id})">Delete</button>
+        <button class="btn-edit" onclick="editEmp('${e._id}')">Edit</button>
+        <button class="btn-glossy" onclick="deleteEmp('${e._id}')">Delete</button>
     </td>
 </tr>
 `;
@@ -184,12 +184,12 @@ function updateEmployee() {
 }
 
 function checkSession() {
-    fetch("${BASE_URL}/employees?page=1", {
+    fetch(`${BASE_URL}/employees?page=1`, {
         credentials: "include"
     })
     .then(res => {
         if (res.status === 401) {
-            window.location = "index.html"; // 🔥 redirect if logged out
+            window.location = "index.html"; //
         }
     });
 }
