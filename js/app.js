@@ -1,63 +1,104 @@
 const BASE_URL = "http://127.0.0.1:8080/api";
 
-// LOGIN
+// ================= LOGIN (SEND OTP) =================
 function login() {
+    document.getElementById("error").innerText = "";
+
     fetch(BASE_URL + "/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
-            username: document.getElementById("username").value,
-            password: document.getElementById("password").value
+            email: document.getElementById("email").value.trim(),
+            password: document.getElementById("password").value.trim()
         })
     })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === "success") {
-                window.location = "dashboard.html";
-            } else {
-                document.getElementById("error").innerText = data.message;
-            }
-        });
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "otp_sent") {
+            showOtpPopup();
+        } else {
+            document.getElementById("error").innerText = data.message;
+        }
+    })
+    .catch(err => {
+        console.log("LOGIN FETCH ERROR:", err);
+        document.getElementById("error").innerText = "Login failed";
+    });
 }
 
+// ================= OTP POPUP =================
+function showOtpPopup() {
+    document.getElementById("otpModal").style.display = "flex";
+}
+
+function hideOtpPopup() {
+    document.getElementById("otpModal").style.display = "none";
+}
+
+// ================= VERIFY OTP =================
+function verifyOTP() {
+    document.getElementById("otpError").innerText = "";
+
+    fetch(BASE_URL + "/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+            email: document.getElementById("email").value.trim(),
+            otp: document.getElementById("otp").value.trim()
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "success") {
+            window.location = "dashboard.html";
+        } else {
+            document.getElementById("otpError").innerText = data.message;
+        }
+    })
+    .catch(err => {
+        console.log("VERIFY OTP FETCH ERROR:", err);
+        document.getElementById("otpError").innerText = "OTP verification failed";
+    });
+}
+
+// ================= LOGOUT =================
 function logout() {
-    fetch(BASE_URL+"/logout", {
+    fetch(BASE_URL + "/logout", {
         method: "POST",
         credentials: "include"
     })
     .then(() => {
-        window.location.replace("index.html"); 
+        window.location.replace("index.html");
     });
 }
-
 
 let currentPage = 1;
 
 // LOAD EMPLOYEES WITH PAGINATION
 function loadEmployees(page = 1) {
-
     currentPage = page;
 
     let keyword = document.getElementById("search")?.value || "";
 
-fetch(`${BASE_URL}/employees?page=${page}&keyword=${keyword}`, {
-    credentials: "include"
-})
-.then(res => {
-    if (res.status === 401 || res.status === 403) {
-        window.location = "index.html"; // 🔥 redirect to login
-        return;
-    }
-    return res.json();
-})
-.then(data => {
-    if (!data) return;
+    fetch(`${BASE_URL}/employees?page=${page}&keyword=${keyword}`, {
+        credentials: "include"
+    })
+    .then(res => {
+        if (res.status === 401 || res.status === 403) {
+            window.location = "index.html";
+            return;
+        }
+        return res.json();
+    })
+    .then(data => {
+        if (!data) return;
 
-    let rows = "";
+        let rows = "";
 
-    data.employees.forEach(e => {
-        rows += `
+        data.employees.forEach(e => {
+            rows += `
 <tr>
 <td>${e._id}</td>
 <td>${e.name}</td>
@@ -65,26 +106,24 @@ fetch(`${BASE_URL}/employees?page=${page}&keyword=${keyword}`, {
 <td>${e.department}</td>
 <td>${e.salary}</td>
 <td>
-        <button class="btn-edit" onclick="editEmp('${e._id}')">Edit</button>
-        <button class="btn-glossy" onclick="deleteEmp('${e._id}')">Delete</button>
-    </td>
+    <button class="btn-edit" onclick="editEmp('${e._id}')">Edit</button>
+    <button class="btn-glossy" onclick="deleteEmp('${e._id}')">Delete</button>
+</td>
 </tr>
 `;
-            });
-
-            document.getElementById("table").innerHTML = rows;
-
-            // PAGINATION UI
-            renderPagination(data.currentPage, data.totalPages);
         });
+
+        document.getElementById("table").innerHTML = rows;
+        renderPagination(data.currentPage, data.totalPages);
+    });
 }
 
-// ADD
+// ADD EMPLOYEE
 function addEmployee() {
     fetch(BASE_URL + "/employees", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
             name: document.getElementById("name").value,
             email: document.getElementById("email").value,
@@ -92,41 +131,37 @@ function addEmployee() {
             salary: document.getElementById("salary").value
         })
     })
-        .then(res => res.json())
-        .then(() => {
-            window.location = "dashboard.html";
-        });
+    .then(res => res.json())
+    .then(() => {
+        window.location = "dashboard.html";
+    });
 }
 
-// DELETE
+// DELETE EMPLOYEE
 function deleteEmp(id) {
-   fetch(BASE_URL + "/employees/" + id, {
-    method: "DELETE",
-    credentials: "include"
-})
-        .then(() => loadEmployees());
+    fetch(BASE_URL + "/employees/" + id, {
+        method: "DELETE",
+        credentials: "include"
+    })
+    .then(() => loadEmployees(currentPage));
 }
 
+// PAGINATION UI
 function renderPagination(current, total) {
-
     let html = "";
 
-    // PREVIOUS
     if (current > 1) {
         html += `<button onclick="loadEmployees(${current - 1})">Prev</button>`;
     }
 
-    // PAGE NUMBERS
     for (let i = 1; i <= total; i++) {
         html += `
-            <button class="${i === current ? 'active' : ''}" 
-                    onclick="loadEmployees(${i})">
-                ${i}
-            </button>
-        `;
+<button class="${i === current ? 'active' : ''}" onclick="loadEmployees(${i})">
+    ${i}
+</button>
+`;
     }
 
-    // NEXT
     if (current < total) {
         html += `<button onclick="loadEmployees(${current + 1})">Next</button>`;
     }
@@ -134,6 +169,7 @@ function renderPagination(current, total) {
     document.getElementById("pagination").innerHTML = html;
 }
 
+// EDIT PAGE REDIRECT
 function editEmp(id) {
     window.location = `edit.html?id=${id}`;
 }
@@ -144,14 +180,13 @@ function getIdFromURL() {
     return params.get("id");
 }
 
-// LOAD EMPLOYEE DATA
+// LOAD EMPLOYEE BY ID
 function loadEmployeeById() {
-
     let id = getIdFromURL();
 
     fetch(`${BASE_URL}/employees/${id}`, {
-    credentials: "include"
-})
+        credentials: "include"
+    })
     .then(res => res.json())
     .then(e => {
         document.getElementById("id").value = e._id;
@@ -164,13 +199,12 @@ function loadEmployeeById() {
 
 // UPDATE EMPLOYEE
 function updateEmployee() {
-
     let id = document.getElementById("id").value;
 
     fetch(BASE_URL + "/employees/" + id, {
-    method: "PUT",
-    credentials: "include",
-    headers: {"Content-Type": "application/json"},
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             name: document.getElementById("name").value,
             email: document.getElementById("email").value,
@@ -183,13 +217,14 @@ function updateEmployee() {
     });
 }
 
+// SESSION CHECK
 function checkSession() {
     fetch(`${BASE_URL}/employees?page=1`, {
         credentials: "include"
     })
     .then(res => {
         if (res.status === 401) {
-            window.location = "index.html"; //
+            window.location = "index.html";
         }
     });
 }

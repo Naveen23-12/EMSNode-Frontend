@@ -12,13 +12,28 @@
 
         <h2>EMS Application</h2>
         <img class="img" src="./images/logo.png" alt="img">
-        <input id="username" placeholder="Username">
+
+        <!-- EMAIL + PASSWORD -->
+        <input id="email" placeholder="Email">
         <input id="password" type="password" placeholder="Password">
 
         <button onclick="login()" class="btn-glossy">Login</button>
 
         <p id="error" class="error-message"></p>
 
+    </div>
+</div>
+
+<!-- 🔐 OTP MODAL -->
+<div id="otpModal" class="otp-modal">
+    <div class="otp-box">
+        <h3>Enter OTP</h3>
+
+        <input id="otp" placeholder="Enter OTP">
+
+        <button onclick="verifyOTP()" class="btn-glossy">Verify</button>
+
+        <p id="otpError" class="error-message"></p>
     </div>
 </div>
 
