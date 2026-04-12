@@ -1,6 +1,6 @@
 const BASE_URL = "http://127.0.0.1:8080/api";
 
-// ================= LOGIN (SEND OTP) =================
+// LOGIN
 function login() {
     document.getElementById("error").innerText = "";
 
@@ -27,7 +27,7 @@ function login() {
     });
 }
 
-// ================= OTP POPUP =================
+// OTP POPUP
 function showOtpPopup() {
     document.getElementById("otpModal").style.display = "flex";
 }
@@ -36,7 +36,50 @@ function hideOtpPopup() {
     document.getElementById("otpModal").style.display = "none";
 }
 
-// ================= VERIFY OTP =================
+// SIGNUP POPUP
+function showSignupPopup() {
+    document.getElementById("signupError").innerText = "";
+    document.getElementById("signupModal").style.display = "flex";
+}
+
+function hideSignupPopup() {
+    document.getElementById("signupModal").style.display = "none";
+}
+
+// SIGNUP
+function registerUser() {
+    document.getElementById("signupError").innerText = "";
+
+    fetch(BASE_URL + "/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+            email: document.getElementById("signupEmail").value.trim(),
+            password: document.getElementById("signupPassword").value.trim()
+        })
+    })
+    .then(async res => {
+        const data = await res.json();
+        return { ok: res.ok, data };
+    })
+    .then(({ ok, data }) => {
+        if (ok && data.status === "success") {
+            alert("Signup successful");
+            hideSignupPopup();
+            document.getElementById("signupEmail").value = "";
+            document.getElementById("signupPassword").value = "";
+        } else {
+            document.getElementById("signupError").innerText = data.message;
+        }
+    })
+    .catch(err => {
+        console.log("REGISTER FETCH ERROR:", err);
+        document.getElementById("signupError").innerText = "Signup failed";
+    });
+}
+
+// VERIFY OTP
 function verifyOTP() {
     document.getElementById("otpError").innerText = "";
 
@@ -63,7 +106,7 @@ function verifyOTP() {
     });
 }
 
-// ================= LOGOUT =================
+// LOGOUT
 function logout() {
     fetch(BASE_URL + "/logout", {
         method: "POST",
@@ -76,7 +119,6 @@ function logout() {
 
 let currentPage = 1;
 
-// LOAD EMPLOYEES WITH PAGINATION
 function loadEmployees(page = 1) {
     currentPage = page;
 
@@ -118,7 +160,6 @@ function loadEmployees(page = 1) {
     });
 }
 
-// ADD EMPLOYEE
 function addEmployee() {
     fetch(BASE_URL + "/employees", {
         method: "POST",
@@ -137,7 +178,6 @@ function addEmployee() {
     });
 }
 
-// DELETE EMPLOYEE
 function deleteEmp(id) {
     fetch(BASE_URL + "/employees/" + id, {
         method: "DELETE",
@@ -146,7 +186,6 @@ function deleteEmp(id) {
     .then(() => loadEmployees(currentPage));
 }
 
-// PAGINATION UI
 function renderPagination(current, total) {
     let html = "";
 
@@ -169,18 +208,15 @@ function renderPagination(current, total) {
     document.getElementById("pagination").innerHTML = html;
 }
 
-// EDIT PAGE REDIRECT
 function editEmp(id) {
     window.location = `edit.html?id=${id}`;
 }
 
-// GET ID FROM URL
 function getIdFromURL() {
     const params = new URLSearchParams(window.location.search);
     return params.get("id");
 }
 
-// LOAD EMPLOYEE BY ID
 function loadEmployeeById() {
     let id = getIdFromURL();
 
@@ -197,7 +233,6 @@ function loadEmployeeById() {
     });
 }
 
-// UPDATE EMPLOYEE
 function updateEmployee() {
     let id = document.getElementById("id").value;
 
@@ -217,7 +252,6 @@ function updateEmployee() {
     });
 }
 
-// SESSION CHECK
 function checkSession() {
     fetch(`${BASE_URL}/employees?page=1`, {
         credentials: "include"

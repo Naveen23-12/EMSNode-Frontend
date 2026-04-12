@@ -13,27 +13,36 @@
         <h2>EMS Application</h2>
         <img class="img" src="./images/logo.png" alt="img">
 
-        <!-- EMAIL + PASSWORD -->
         <input id="email" placeholder="Email">
         <input id="password" type="password" placeholder="Password">
 
         <button onclick="login()" class="btn-glossy">Login</button>
+        <button onclick="showSignupPopup()" class="btn-edit">Sign Up</button>
 
         <p id="error" class="error-message"></p>
 
     </div>
 </div>
 
-<!-- 🔐 OTP MODAL -->
+<!-- OTP MODAL -->
 <div id="otpModal" class="otp-modal">
     <div class="otp-box">
         <h3>Enter OTP</h3>
-
         <input id="otp" placeholder="Enter OTP">
-
         <button onclick="verifyOTP()" class="btn-glossy">Verify</button>
-
         <p id="otpError" class="error-message"></p>
+    </div>
+</div>
+
+<!-- SIGNUP MODAL -->
+<div id="signupModal" class="otp-modal">
+    <div class="otp-box">
+        <h3>Sign Up</h3>
+        <input id="signupEmail" placeholder="Enter Email">
+        <input id="signupPassword" type="password" placeholder="Enter Password">
+        <button onclick="registerUser()" class="btn-glossy">Create Account</button>
+        <button onclick="hideSignupPopup()" class="btn-edit">Close</button>
+        <p id="signupError" class="error-message"></p>
     </div>
 </div>
 

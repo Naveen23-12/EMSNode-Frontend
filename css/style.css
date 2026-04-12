@@ -278,3 +278,13 @@ button {
     background: rgba(255,255,255,0.15);
     color: white;
 }
+
+#signupModal input {
+    width: 100%;
+    padding: 10px;
+    margin: 12px 0;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255,255,255,0.15);
+    color: white;
+}
