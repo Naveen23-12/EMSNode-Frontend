@@ -7,7 +7,6 @@ function login() {
     fetch(BASE_URL + "/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({
             email: document.getElementById("email").value.trim(),
             password: document.getElementById("password").value.trim()
@@ -53,7 +52,6 @@ function registerUser() {
     fetch(BASE_URL + "/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({
             email: document.getElementById("signupEmail").value.trim(),
             password: document.getElementById("signupPassword").value.trim()
@@ -79,14 +77,13 @@ function registerUser() {
     });
 }
 
-// VERIFY OTP
+// VERIFY OTP -> SAVE JWT
 function verifyOTP() {
     document.getElementById("otpError").innerText = "";
 
     fetch(BASE_URL + "/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({
             email: document.getElementById("email").value.trim(),
             otp: document.getElementById("otp").value.trim()
@@ -95,6 +92,8 @@ function verifyOTP() {
     .then(res => res.json())
     .then(data => {
         if (data.status === "success") {
+            localStorage.setItem("token", data.token);
+            hideOtpPopup();
             window.location = "dashboard.html";
         } else {
             document.getElementById("otpError").innerText = data.message;
@@ -108,16 +107,19 @@ function verifyOTP() {
 
 // LOGOUT
 function logout() {
-    fetch(BASE_URL + "/logout", {
-        method: "POST",
-        credentials: "include"
-    })
-    .then(() => {
-        window.location.replace("index.html");
-    });
+    localStorage.removeItem("token");
+    window.location.replace("index.html");
 }
 
 let currentPage = 1;
+
+function getAuthHeaders(extraHeaders = {}) {
+    const token = localStorage.getItem("token");
+    return {
+        ...extraHeaders,
+        Authorization: "Bearer " + token
+    };
+}
 
 function loadEmployees(page = 1) {
     currentPage = page;
@@ -125,10 +127,11 @@ function loadEmployees(page = 1) {
     let keyword = document.getElementById("search")?.value || "";
 
     fetch(`${BASE_URL}/employees?page=${page}&keyword=${keyword}`, {
-        credentials: "include"
+        headers: getAuthHeaders()
     })
     .then(res => {
         if (res.status === 401 || res.status === 403) {
+            localStorage.removeItem("token");
             window.location = "index.html";
             return;
         }
@@ -163,8 +166,9 @@ function loadEmployees(page = 1) {
 function addEmployee() {
     fetch(BASE_URL + "/employees", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
+        headers: getAuthHeaders({
+            "Content-Type": "application/json"
+        }),
         body: JSON.stringify({
             name: document.getElementById("name").value,
             email: document.getElementById("email").value,
@@ -181,7 +185,7 @@ function addEmployee() {
 function deleteEmp(id) {
     fetch(BASE_URL + "/employees/" + id, {
         method: "DELETE",
-        credentials: "include"
+        headers: getAuthHeaders()
     })
     .then(() => loadEmployees(currentPage));
 }
@@ -221,10 +225,19 @@ function loadEmployeeById() {
     let id = getIdFromURL();
 
     fetch(`${BASE_URL}/employees/${id}`, {
-        credentials: "include"
+        headers: getAuthHeaders()
     })
-    .then(res => res.json())
+    .then(res => {
+        if (res.status === 401 || res.status === 403) {
+            localStorage.removeItem("token");
+            window.location = "index.html";
+            return;
+        }
+        return res.json();
+    })
     .then(e => {
+        if (!e) return;
+
         document.getElementById("id").value = e._id;
         document.getElementById("name").value = e.name;
         document.getElementById("email").value = e.email;
@@ -238,8 +251,9 @@ function updateEmployee() {
 
     fetch(BASE_URL + "/employees/" + id, {
         method: "PUT",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders({
+            "Content-Type": "application/json"
+        }),
         body: JSON.stringify({
             name: document.getElementById("name").value,
             email: document.getElementById("email").value,
@@ -253,11 +267,19 @@ function updateEmployee() {
 }
 
 function checkSession() {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        window.location = "index.html";
+        return;
+    }
+
     fetch(`${BASE_URL}/employees?page=1`, {
-        credentials: "include"
+        headers: getAuthHeaders()
     })
     .then(res => {
-        if (res.status === 401) {
+        if (res.status === 401 || res.status === 403) {
+            localStorage.removeItem("token");
             window.location = "index.html";
         }
     });
